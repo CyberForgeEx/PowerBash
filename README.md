@@ -1,4 +1,4 @@
-# System Utility Script
+# PSMultiTool - System Utility Script
 
 ## Overview
 This PowerShell script provides a collection of system administration utilities for Windows, including process management, system health monitoring, disk space checking, PDF password protection, file hash calculation, and IP geolocation lookup. The script requires administrative privileges to run.
