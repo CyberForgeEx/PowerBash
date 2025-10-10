@@ -40,7 +40,7 @@ This PowerShell script provides a collection of system administration utilities 
    ```
 3. Execute the script:
    ```powershell
-   .\SystemUtility.ps1
+   .\script.ps1
    ```
 4. Follow the interactive menu to select an option (1-7):
    - **1**: Enter a process name (e.g., `notepad`) to terminate.
@@ -78,9 +78,14 @@ This PowerShell script provides a collection of system administration utilities 
 6. IP Location Lookup
 7. Exit
 
-Enter your choice (1-7): 2
-CPU Usage: 11%
-Memory Usage: 50.41% (15.69 GB free of 31.64 GB)
+Enter your choice (1-7): 6
+Enter IP address for location lookup: 8.8.8.8
+[2025-10-10 19:53:04] [INFO] IP: 8.8.8.8
+[2025-10-10 19:53:04] [INFO] Status: success
+[2025-10-10 19:53:04] [INFO] Location: Ashburn, Virginia, United States
+[2025-10-10 19:53:04] [INFO] ISP: Google LLC
+[2025-10-10 19:53:04] [INFO] Organisation: Google Public DNS
+[2025-10-10 19:53:04] [INFO] Longitude and Latitude Based on IP: -77.5, 39.03
 
 Press Enter to continue...
 
