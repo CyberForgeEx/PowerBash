@@ -11,6 +11,27 @@ function Test-Admin {
     return $currentUser.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
+# write log function to process output and write to log file.
+function Write-Log {
+    param (
+        [string]$Message,
+        [string]$LogLevel = "INFO"
+    )
+        $logFile = "..\Logs\PSMULTITOOL_$(Get-Date -Format 'yyyyMMdd').log"
+        $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        $logMessage = "[$timestamp] [$LogLevel] $Message"
+        if (-not (Test-Path (Split-Path $logFile))) {
+            New-Item -ItemType Directory -Path (Split-Path $logFile) -Force | Out-Null
+        }
+        Add-Content -Path $logFile -Value $logMessage
+        switch ($LogLevel) {
+            "ERROR" { Write-Host $logMessage -ForegroundColor Red }
+            "WARNING" { Write-Host $logMessage -ForegroundColor Yellow }
+            default { Write-Host $logMessage -ForegroundColor Green }
+        }
+
+}
+
 # Function to kill a process by name process name
 function Kill-Process {
     param (
@@ -21,13 +42,13 @@ function Kill-Process {
         if ($processes) {
             foreach ($process in $processes) {
                 Stop-Process -Id $process.Id -Force -ErrorAction Stop
-                Write-Host "Terminated process: $($process.Name) (PID: $($process.Id))" 
+                Write-Log "Terminated process: $($process.Name) (PID: $($process.Id))" 
             }
         } else {
-            Write-Host "No process found with name: $ProcessName"
+            Write-Log "No process found with name: $ProcessName"
         }
     } catch {
-        Write-Host "Error terminating process: $_" -ForegroundColor Red
+        Write-Log "Error terminating process: $_" 
     }
 }
 
@@ -42,10 +63,10 @@ function Get-SystemHealth {
         $freeMemory = [math]::Round($memory.FreePhysicalMemory / 1MB, 2)
         $usedMemoryPercent = [math]::Round((($totalMemory - $freeMemory) / $totalMemory) * 100, 2)
 
-        Write-Host "CPU Usage: $cpu%" -ForegroundColor Green
-        Write-Host "Memory Usage: $usedMemoryPercent% ($freeMemory GB free of $totalMemory GB)" -ForegroundColor Green
+        Write-Log "CPU Usage: $cpu%"
+        Write-Log "Memory Usage: $usedMemoryPercent% ($freeMemory GB free of $totalMemory GB)"
     } catch {
-        Write-Host "Error retrieving system health: $_" -ForegroundColor Red
+        Write-Log "Error retrieving system health: $_"
     }
 }
 
@@ -60,12 +81,12 @@ function Get-FreeSpace {
         $totalSpaceGB = [math]::Round($disk.Size / 1GB, 2)
         $thresholdGB = 30
 
-        Write-Host "Drive $DriveLetter - Free Space: $freeSpaceGB GB / Total: $totalSpaceGB GB"
+        Write-Log "Drive $DriveLetter - Free Space: $freeSpaceGB GB / Total: $totalSpaceGB GB"
         if ($freeSpaceGB -lt $thresholdGB) {
-            Write-Host "Warning: Free space is below $thresholdGB GB!" -ForegroundColor Yellow
+            Write-Log "Warning: Free space is below $thresholdGB GB!"
         }
     } catch {
-        Write-Host "Error checking disk space: $_" -ForegroundColor Red
+        Write-Log "Error checking disk space: $_"
     }
 }
 
@@ -77,19 +98,19 @@ function Protect-PDF {
     )
     try {
         if (-not (Test-Path $FilePath)) {
-            Write-Host "PDF file not found: $FilePath" -ForegroundColor Red
+            Write-Log "PDF file not found: $FilePath"
             return
         }
         # the below code creates a copy of the password protected and encrypted pdf file based on AES-256.
         $outputFile = $FilePath -replace '\.pdf$', '_protected.pdf'
         & qpdf --encrypt $Password $Password 256 -- $FilePath $outputFile
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "PDF protected successfully: $outputFile" -ForegroundColor Green
+            Write-Log "PDF protected successfully: $outputFile" 
         } else {
-            Write-Host "Failed to protect PDF" -ForegroundColor Red
+            Write-Log "Failed to protect PDF" 
         }
     } catch {
-        Write-Host "Error protecting PDF: $_" -ForegroundColor Red
+        Write-Log "Error protecting PDF: $_"
     }
 }
 
@@ -100,14 +121,14 @@ function Get-FileHashValue {
     )
     try {
         if (-not (Test-Path $FilePath)) {
-            Write-Host "File not found: $FilePath" -ForegroundColor Red
+            Write-Log "File not found: $FilePath"
             return
         }
         $hash = Get-FileHash -Path $FilePath -Algorithm SHA256 -ErrorAction Stop
-        Write-Host "File: $FilePath"
-        Write-Host "SHA256 Hash: $($hash.Hash)"
+        Write-Log "File: $FilePath"
+        Write-Log "SHA256 Hash: $($hash.Hash)"
     } catch {
-        Write-Host "Error calculating file hash: $_" -ForegroundColor Red
+        Write-Log "Error calculating file hash: $_"
     }
 }
 
@@ -119,17 +140,17 @@ function Get-IPInfo {
     try {
         $response = Invoke-RestMethod -Uri "http://ip-api.com/json/$IPAddress" -ErrorAction Stop
         if ($response.status -eq "success") {
-            Write-Host "IP: $IPAddress"
-            Write-Host "Status: $($response.status)"
-            Write-Host "Location: $($response.city), $($response.regionName), $($response.country)"
-            Write-Host "ISP: $($response.isp)"
-            Write-Host "Organisation: $($response.org)"
-            Write-Host "Longitude and Latitude Based on IP: $($response.lon), $($response.lat)"
+            Write-Log "IP: $IPAddress"
+            Write-Log "Status: $($response.status)"
+            Write-Log "Location: $($response.city), $($response.regionName), $($response.country)"
+            Write-Log "ISP: $($response.isp)"
+            Write-Log "Organisation: $($response.org)"
+            Write-Log "Longitude and Latitude Based on IP: $($response.lon), $($response.lat)"
         } else {
-            Write-Host "Failed to retrieve location for IP: $IPAddress" -ForegroundColor Red
+            Write-Log "Failed to retrieve location for IP: $IPAddress"
         }
     } catch {
-        Write-Host "Error fetching IP location: $_" -ForegroundColor Red
+        Write-Log "Error fetching IP location: $_"
     }
 }
 
@@ -148,7 +169,7 @@ function Show-Menu {
 
 #logic to check privilege.
 if (-not (Test-Admin)) {
-    Write-Host "`nThis script requires administrative privileges. Please run as Administrator." -ForegroundColor Red
+    Write-Log "`nThis script requires administrative privileges. Please run as Administrator."
     exit
 }
 
