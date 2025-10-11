@@ -45,10 +45,10 @@ function Kill-Process {
                 Write-Log "Terminated process: $($process.Name) (PID: $($process.Id))" 
             }
         } else {
-            Write-Log "No process found with name: $ProcessName"
+            Write-Log "No process found with name: $ProcessName" -LogLevel "ERROR"
         }
     } catch {
-        Write-Log "Error terminating process: $_" 
+        Write-Log "Error terminating process: $_" -LogLevel "ERROR"
     }
 }
 
@@ -66,7 +66,7 @@ function Get-SystemHealth {
         Write-Log "CPU Usage: $cpu%"
         Write-Log "Memory Usage: $usedMemoryPercent% ($freeMemory GB free of $totalMemory GB)"
     } catch {
-        Write-Log "Error retrieving system health: $_"
+        Write-Log "Error retrieving system health: $_" -LogLevel "ERROR"
     }
 }
 
@@ -83,10 +83,10 @@ function Get-FreeSpace {
 
         Write-Log "Drive $DriveLetter - Free Space: $freeSpaceGB GB / Total: $totalSpaceGB GB"
         if ($freeSpaceGB -lt $thresholdGB) {
-            Write-Log "Warning: Free space is below $thresholdGB GB!"
+            Write-Log "Warning: Free space is below $thresholdGB GB!" -LogLevel "WARNING"
         }
     } catch {
-        Write-Log "Error checking disk space: $_"
+        Write-Log "Error checking disk space: $_" -LogLevel "ERROR"
     }
 }
 
@@ -98,7 +98,7 @@ function Protect-PDF {
     )
     try {
         if (-not (Test-Path $FilePath)) {
-            Write-Log "PDF file not found: $FilePath"
+            Write-Log "PDF file not found: $FilePath" -LogLevel "ERROR"
             return
         }
         # the below code creates a copy of the password protected and encrypted pdf file based on AES-256.
@@ -110,7 +110,7 @@ function Protect-PDF {
             Write-Log "Failed to protect PDF" 
         }
     } catch {
-        Write-Log "Error protecting PDF: $_"
+        Write-Log "Error protecting PDF: $_" -LogLevel "ERROR"
     }
 }
 
@@ -128,7 +128,7 @@ function Get-FileHashValue {
         Write-Log "File: $FilePath"
         Write-Log "SHA256 Hash: $($hash.Hash)"
     } catch {
-        Write-Log "Error calculating file hash: $_"
+        Write-Log "Error calculating file hash: $_" -LogLevel "ERROR"
     }
 }
 
@@ -147,10 +147,26 @@ function Get-IPInfo {
             Write-Log "Organisation: $($response.org)"
             Write-Log "Longitude and Latitude Based on IP: $($response.lon), $($response.lat)"
         } else {
-            Write-Log "Failed to retrieve location for IP: $IPAddress"
+            Write-Log "Failed to retrieve location for IP: $IPAddress" -LogLevel "ERROR"
         }
     } catch {
-        Write-Log "Error fetching IP location: $_"
+        Write-Log "Error fetching IP location: $_" -LogLevel "ERROR"
+    }
+}
+
+# Function to get live network stats
+function Get-NetworkStats {
+    try {
+        $adapters = Get-NetAdapter -Physical | Where-Object { $_.Status -eq "Up" }
+        foreach ($adapter in $adapters) {
+            $stats = Get-NetAdapterStatistics -Name $adapter.Name
+            Write-Log "Network Adapter: $($adapter.Name)" -LogLevel "INFO"
+            Write-Log "Status: $($adapter.Status)" -LogLevel "INFO"
+            Write-Log "Bytes Sent: $([math]::Round($stats.SentBytes / 1MB, 2)) MB" -LogLevel "INFO"
+            Write-Log "Bytes Received: $([math]::Round($stats.ReceivedBytes / 1MB, 2)) MB" -LogLevel "INFO"
+        }
+    } catch {
+        Write-Log "Error retrieving network stats: $_" -LogLevel "ERROR"
     }
 }
 
@@ -163,13 +179,14 @@ function Show-Menu {
     Write-Host "4. PDF Password Protection"
     Write-Host "5. Retrieve File Hash"
     Write-Host "6. IP Location Lookup"
-    Write-Host "7. Exit"
-    Write-Host "`nEnter your choice (1-7): " -NoNewline
+    Write-Host "7. Get Network Stats"
+    Write-Host "8. Exit"
+    Write-Host "`nEnter your choice (1-8): " -NoNewline
 }
 
 #logic to check privilege.
 if (-not (Test-Admin)) {
-    Write-Log "`nThis script requires administrative privileges. Please run as Administrator."
+    Write-Log "`nThis script requires administrative privileges. Please run as Administrator." -LogLevel "ERROR"
     exit
 }
 
@@ -204,6 +221,9 @@ while ($true) {
             Get-IPInfo -IPAddress $ipAddress
         }
         "7" {
+            Get-NetworkStats
+        }
+        "8"{
             Write-Host "Exiting script..." -ForegroundColor Cyan
             exit
         }
