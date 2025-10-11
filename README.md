@@ -17,10 +17,10 @@ This PowerShell script provides a collection of system administration utilities 
 4. **PDF Password Protection**: Encrypt a PDF file with a user-provided password using qpdf.
 5. **Retrieve File Hash**: Calculate the SHA256 hash of a specified file.
 6. **IP Location Lookup**: Retrieve geolocation information for a given IP address using the ip-api.com API.
+7. **Get Network Stats**: Get live network status.
 
 ## Installation
-1. Save the script as `SystemUtility.ps1`.
-2. Install qpdf for PDF password protection:
+1. Install qpdf for PDF password protection:
    - Using Chocolatey: `choco install qpdf`
    - Or download from [qpdf releases](https://github.com/qpdf/qpdf/releases).
 3. Ensure PowerShell execution policy allows running scripts:
@@ -59,6 +59,7 @@ This PowerShell script provides a collection of system administration utilities 
 - `Protect-PDF`: Encrypts a PDF file with a password using qpdf.
 - `Get-FileHashValue`: Calculates the SHA256 hash of a file.
 - `Get-IPInfo`: Queries ip-api.com for IP geolocation data.
+- `Get-NetworkStats`: Retrives the connected network info. 
 
 ## Notes
 - The script uses `Get-CimInstance` for system health and disk space checks, which is more reliable than older PS cmdlets.
