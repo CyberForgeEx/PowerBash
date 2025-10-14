@@ -170,6 +170,27 @@ function Get-NetworkStats {
     }
 }
 
+# Function to backup files
+function Backup-Files {
+    param (
+        [string]$SourcePath,
+        [string]$BackupPath = "C:\Backups\Backup_$(Get-Date -Format 'yyyyMMdd_HHmmss').zip"
+    )
+    try {
+        if (-not (Test-Path $SourcePath)) {
+            Write-Log "Source path not found: $SourcePath" -LogLevel "ERROR"
+            return
+        }
+        if (-not (Test-Path (Split-Path $BackupPath))) {
+            New-Item -ItemType Directory -Path (Split-Path $BackupPath) -Force | Out-Null
+        }
+        Compress-Archive -Path $SourcePath -DestinationPath $BackupPath -Force
+        Write-Log "Backup created: $BackupPath" -LogLevel "INFO"
+    } catch {
+        Write-Log "Error creating backup: $_" -LogLevel "ERROR"
+    }
+}
+
 # Menu
 function Show-Menu {
     Write-Host "`n== System Utility Script ==" -ForegroundColor Cyan
@@ -180,8 +201,9 @@ function Show-Menu {
     Write-Host "5. Retrieve File Hash"
     Write-Host "6. IP Location Lookup"
     Write-Host "7. Get Network Stats"
-    Write-Host "8. Exit"
-    Write-Host "`nEnter your choice (1-8): " -NoNewline
+    Write-Host "8. Backup Files"
+    Write-Host "9. Exit"
+    Write-Host "`nEnter your choice (1-9): " -NoNewline
 }
 
 #logic to check privilege.
@@ -224,11 +246,17 @@ while ($true) {
             Get-NetworkStats
         }
         "8"{
+            $sourcePath = Read-Host "Enter source path to backup"
+            $backupPath = Read-Host "Enter backup destination (default: C:\Backups\Backup_<timestamp>.zip)"
+            if (-not $backupPath) { $backupPath = "C:\Backups\Backup_$(Get-Date -Format 'yyyyMMdd_HHmmss').zip" }
+            Backup-Files -SourcePath $sourcePath -BackupPath $backupPath
+        }
+        "9"{
             Write-Host "Exiting script..." -ForegroundColor Cyan
             exit
         }
         default {
-            Write-Host "Invalid choice. Please select 1-8." -ForegroundColor Red
+            Write-Host "Invalid choice. Please select 1-9." -ForegroundColor Red
         }
     }
     Write-Host "`nPress Enter to continue..."
