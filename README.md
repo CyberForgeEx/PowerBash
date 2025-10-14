@@ -1,7 +1,7 @@
 # PSMultiTool - System Utility Script
 
 ## Overview
-This PowerShell script provides a collection of system administration utilities for Windows, including process management, system health monitoring, disk space checking, PDF password protection, file hash calculation, and IP geolocation lookup. The script requires administrative privileges to run.
+This PowerShell script provides a collection of system administration utilities for Windows, including process management, system health monitoring, disk space checking, PDF password protection, file hash calculation, IP geolocation lookup, Network stats, and File Backup features. The script requires administrative privileges to run.
 
 ## Requirements
 - **Operating System**: Windows
@@ -49,7 +49,9 @@ This PowerShell script provides a collection of system administration utilities 
    - **4**: Provide a PDF file path and password to protect the file.
    - **5**: Enter a file path to calculate its SHA256 hash.
    - **6**: Input an IP address for geolocation info lookup.
-   - **7**: Exit the script.
+   - **7**: Get network stats
+   - **8**: Backup Files as ZIP format.
+   - **9**: Exit the script.
 
 ## Functions
 - `Test-Admin`: Checks if the script is running with administrative privileges.
@@ -59,7 +61,8 @@ This PowerShell script provides a collection of system administration utilities 
 - `Protect-PDF`: Encrypts a PDF file with a password using qpdf.
 - `Get-FileHashValue`: Calculates the SHA256 hash of a file.
 - `Get-IPInfo`: Queries ip-api.com for IP geolocation data.
-- `Get-NetworkStats`: Retrives the connected network info. 
+- `Get-NetworkStats`: Retrives the connected network info.
+- `Backup-Files`: Back up the files and save it in a secure place.
 
 ## Notes
 - The script uses `Get-CimInstance` for system health and disk space checks, which is more reliable than older PS cmdlets.
@@ -77,9 +80,11 @@ This PowerShell script provides a collection of system administration utilities 
 4. PDF Password Protection
 5. Retrieve File Hash
 6. IP Location Lookup
-7. Exit
+7. Get Network Stats
+8. Backup Files
+9. Exit
 
-Enter your choice (1-7): 6
+Enter your choice (1-9): 6
 Enter IP address for location lookup: 8.8.8.8
 [2025-10-10 19:53:04] [INFO] IP: 8.8.8.8
 [2025-10-10 19:53:04] [INFO] Status: success
@@ -97,9 +102,11 @@ Press Enter to continue...
 4. PDF Password Protection
 5. Retrieve File Hash
 6. IP Location Lookup
-7. Exit
+7. Get Network Stats
+8. Backup Files
+9. Exit
 
-Enter your choice (1-7): 7
+Enter your choice (1-9): 9
 Exiting script...
 ```
 
