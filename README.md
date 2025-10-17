@@ -1,7 +1,7 @@
-# PSMultiTool - System Utility Script
+# PowerBash - System Utility Script for Windows and Linux
 
 ## Overview
-This PowerShell script provides a collection of system administration utilities for Windows, including process management, system health monitoring, disk space checking, PDF password protection, file hash calculation, IP geolocation lookup, Network stats, and File Backup features. The script requires administrative privileges to run.
+This PowerShell script provides a collection of system administration utilities for Windows and linux, including process management, system health monitoring, disk space checking, PDF password protection, file hash calculation, IP geolocation lookup, Network stats, and File Backup features. The script requires administrative privileges to run.
 
 ## Requirements
 - **Operating System**: Windows
