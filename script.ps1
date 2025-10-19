@@ -17,7 +17,7 @@ function Write-Log {
         [string]$Message,
         [string]$LogLevel = "INFO"
     )
-        $logFile = "..\Logs\PSMULTITOOL_$(Get-Date -Format 'yyyyMMdd').log"
+        $logFile = ".\Logs\POWERBASH_$(Get-Date -Format 'yyyyMMdd').log"
         $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
         $logMessage = "[$timestamp] [$LogLevel] $Message"
         if (-not (Test-Path (Split-Path $logFile))) {
