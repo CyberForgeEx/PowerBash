@@ -11,7 +11,7 @@ A unified system administration scripts providing essential utilities for both W
 
 ## Overview
 
-PowerBash is a system administration script designed to streamline common management tasks. It automatically detects your operating system and provides platform-specific implementations while maintaining consistent functionality across Windows and Linux environments.
+PowerBash is a system administration script designed to streamline common management task while maintaining consistent functionality across Windows and Linux environments.
 
 ### Key Highlights
 
