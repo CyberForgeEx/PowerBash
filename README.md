@@ -66,7 +66,7 @@ which bash curl zip sha256sum df top pgrep kill
 ```powershell
 # Using Git
 git clone https://github.com/CyberForgeEx/PowerBash.git
-cd PSMultiTool
+cd PowerBash
 ```
 
 #### Step 2: Set Execution Policy
@@ -410,13 +410,13 @@ All operations are logged to timestamped log files for auditing and troubleshoot
 ## File Structure
 
 ```
-PSMultiTool/
+PowerBash/
 ├── script.ps1              # Windows PowerShell version
 ├── script.sh               # Linux Bash version
 ├── README.md               # This file
 ├── LICENSE                 # MIT License
 └── Logs/                   # Log directory (created automatically)
-    └── PSMULTITOOL_*.log   # Daily log files
+    └── POWERBASH*.log   # Daily log files
 ```
 
 ---
@@ -465,7 +465,7 @@ sudo ./script.sh
 ### Use Case 3: Automated Daily Backup
 ```bash
 # Add to crontab for daily execution
-0 22 * * * /home/user/PSMultiTool/script.sh << EOF
+0 22 * * * /home/user/PowerBash/script.sh << EOF
 7
 /home/user/documents
 /mnt/backup
@@ -515,7 +515,7 @@ sudo ./script.sh
 **Windows:**
 Edit `script.ps1` and change:
 ```powershell
-$logFile = "C:\custom\path\PSMULTITOOL_$(Get-Date -Format 'yyyyMMdd').log"
+$logFile = "C:\custom\path\POWERBASH_$(Get-Date -Format 'yyyyMMdd').log"
 ```
 
 **Linux:**
